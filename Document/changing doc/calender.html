@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calender</title>
+</head>
+<body>
+    <header id = 'header'>
+        <center><nav>
+            <a href='/index.html'>Главная</a>
+            <a href="https://learn.javascript.ru/" target="_blank">Учебник</a>
+            <a>ДЗ</a>
+        </nav></center>
+    </header>
+    <div id="calender"></div>
+    <script>
+        function countFirstDayOfWeek(month, year) {
+            let daysNumberInMonths = {
+                1 : 31,
+                2 : 28,
+                3 : 31,
+                4 : 30,
+                5: 31,
+                6: 30,
+                7: 31,
+                8: 31,
+                9: 30,
+                10: 31,
+                11: 30,
+                12: 31
+            };
+            //year 2001 started with monday
+            let previousBissNumber = Math.ceil((year - 2000) / 4) - 1;
+            if (previousBissNumber < 0){
+                previousBissNumber = 0;
+            }
+            
+            if (year % 4 == 0) {
+                daysNumberInMonths[2] += 1;
+            }
+            let daysFrom2001 = 365 * (year - 2001) + previousBissNumber;
+            for (let i = 1; i < month; i++){
+                daysFrom2001 += daysNumberInMonths[i];
+            }
+
+            let firstDay = (daysFrom2001 + 1) % 7;
+            return firstDay;
+        }
+
+        function createCalender(elem, month, year) {
+            let daysNumberInMonths = {
+                1 : 31,
+                2 : 28,
+                3 : 31,
+                4 : 30,
+                5: 31,
+                6: 30,
+                7: 31,
+                8: 31,
+                9: 30,
+                10: 31,
+                11: 30,
+                12: 31
+            };
+            let firstDay = countFirstDayOfWeek(month, year);
+
+            let table = document.createElement('table');
+            table.insertAdjacentHTML("afterbegin", `<tr><th colspan='8'>Year ${year}, month ${month}</th></tr>`);
+            table.border = true;
+            for (let i = 0; i < 5; ++i) {
+                let row = document.createElement('tr');
+                let firstCell = document.createElement("th");
+                firstCell.append("Week " + (i + 1));
+                row.append(firstCell);
+                table.append(row);
+            }
+            
+            for (let i = 0; i < firstDay - 1; i ++) {
+                let tableCell = document.createElement('td');
+                tableCell.append("-");
+                table.rows[1].append(tableCell);
+            }
+            for (let i = 0; i < 7 - firstDay + 1; ++i) {
+                let tableCell = document.createElement('td');
+                let date = i + 1;
+                tableCell.append(date + '.' + month + '.' + year);
+                table.rows[1].append(tableCell);
+            }
+
+            let counter = 0;
+            for (let i = 9 - firstDay; i < daysNumberInMonths[month]; i ++) {
+                let tableCell = document.createElement("td");
+                tableCell.append(i + '.' + month + '.' +year);
+                
+                let week = Math.floor((i + firstDay - 2) / 7) + 1;
+                table.rows[week].append(tableCell);
+
+            }
+
+            elem.append(table);
+            return;
+        }
+        createCalender(document.getElementById('calender'), 2, 2002);
+    </script>
+</body>
+</html>

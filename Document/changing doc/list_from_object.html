@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список из объекта</title>
+</head>
+
+<body>
+    <div id="tree"></div>
+    <script>
+        let data = {
+            "Рыбы": {
+                "форель": {},
+                "лосось": {}
+            },
+
+            "Деревья": {
+                "Огромные": {
+                    "секвойя": {},
+                    "дуб": {}
+                },
+                "Цветковые": {
+                    "яблоня": {},
+                    "магнолия": {}
+                }
+            }
+        };
+
+        function createLiList(insertedObjects) {
+            let liList=[];
+            for (let key in insertedObjects) {
+                let li = document.createElement('li')
+                li.append(key)
+                li.dataset.text = key;
+                liList.push(li);
+            }
+            return liList;
+        } 
+        function insertLi_s(elem, object) {
+            if (!Object.keys(object)) {
+                return;
+            }
+
+            let ul = document.createElement('ul');
+            let li_s = createLiList(object);
+
+            for (let num in li_s) {
+                let li = li_s[num];
+                ul.append(li);
+                if (Object.keys(object[li.dataset.text])) {
+                    insertLi_s(li, object[li.dataset.text]);
+                }
+            }
+            
+            elem.append(ul);
+        }
+        
+        insertLi_s(document.getElementById('tree'), data)
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <ol id="list_from_prompts"></ol>
+    <script>
+        let answer = prompt("Input a paragraph of a list: ");
+        let ol = document.getElementById("list_from_prompts");
+        while(answer) {
+            let newParagraph = document.createElement('li');
+            newParagraph.append(answer);
+            ol.append(newParagraph);
+            answer = prompt("Input a paragraph of a list: ");
+        }
+    </script>
+</body>
+</html>
