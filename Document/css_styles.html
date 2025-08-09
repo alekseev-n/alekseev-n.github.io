@@ -1,23 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet">
+    <style>
+        #notification {
+            position: fixed;
+            z-index: 1000;
+            padding: 5px;
+            border: 1px solid black;
+            font-size: 20px;
+            background: white;
+            text-align: center;
+        }
+
+        #welcome {
+            background: #b80000;
+            color: yellow;
+        }
+    </style>
 </head>
+
 <body>
+    <h2>Уведомление находится справа</h2>
+
+    <p>
+        Русь святая, храни веру православную, в ней же тебе утверждение.
+    </p>
     <script>
-        function showNotification({top = 0, right = 0, html, className=''}) {
+        function showNotification({ top = 0, right = 0, html, className }) {
             let message = document.createElement('div');
-            message.classList.add("message");
+            message.className = 'notification';
 
             message.innerHTML = html;
             message.classList.add(className);
             message.style.top = top + 'px';
             message.style.right = right + 'px';
 
-            document.body.prepend(message);
+            document.body.append(message);
 
             setTimeout(() => message.remove(), 1500)
         }
@@ -27,7 +49,8 @@
             right: 50,
             html: "Hello!", // HTML-уведомление
             className: "welcome" // дополнительный класс для div (необязательно)
-            });
+        });
     </script>
 </body>
+
 </html>

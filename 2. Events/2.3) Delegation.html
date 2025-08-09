@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Делегирование событий</title>
+    <style>
+        .note {
+            background-color: yellow;
+        }
+
+        .tooltip {
+            background-color: darkseagreen;
+        }
+
+        #grid {
+            border: true
+        }
+
+    </style>
+</head>
+
+<body>
+    <h2>Задание 1</h2>
+    <section class="note">
+        <h2>Коза</h2>
+        <button class="delete" data-behavior="delete">[x]</button>
+    </section>
+    <section class="note">
+        <h2>Баян</h2>
+        <button class="delete" data-behavior="delete">[x]</button>
+    </section>
+
+    <script>
+        function deleteElem(event) {
+            let behavior = event.target.dataset.behavior
+            if (behavior != undefined && behavior == 'delete') {
+                event.target.parentElement.hidden = true;
+            }
+        }
+        document.addEventListener('click', deleteElem);
+    </script>
+
+    <hr />
+
+    <h2>Задание 2: свёртываемая таблица</h2>
+    <ul>
+        <li data-behavior='hide children'>Животные
+            <ul>
+                <li data-behavior='hide children' class="clickable">Млекопитающие
+                    <ul>
+                        <li>Коровы</li>
+                        <li>Ослы</li>
+                        <li>Собаки</li>
+                        <li>Тигры</li>
+                    </ul>
+                </li>
+                <li data-behavior='hide children' class="clickable">Другие
+                    <ul>
+                        <li>Snakes</li>
+                        <li>Birds</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+
+        <li data-behavior='hide children' class="clickable">Рыбы
+            <ul>
+                <li data-behavior='hide children' class="clickable">Аквариумные
+                    <ul>
+                        <li>Гуппи</li>
+                        <li>Скалярии</li>
+                    </ul>
+                </li>
+                <li data-behavior='hide children' class="clickable">
+                    Морские
+                    <ul>
+                        <li>Акула</li>
+                        <li>Скумбрия</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <script>
+        function hideList(event) {
+            let behavior = event.target.dataset.behavior
+            if (behavior != null && behavior == 'hide children') {
+                for (let child of event.target.children) {
+                    child.hidden = !child.hidden
+                }
+            }
+        }
+        document.addEventListener('click', hideList);
+    </script>
+    <hr />
+
+    <h2>Задание 3: сортируемая таблица</h2>
+    <table id='grid'>
+        <caption>Сортируемая таблица: щёлкните по заголовку столбца для сортировки</caption>
+        <thead>
+            <tr>
+                <th data-type="string">Имя</th>
+                <th data-type="number">Возраст</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Вася</td>
+                <td>10</td>
+            </tr>
+            <tr>
+                <td>John</td>
+                <td>11</td>
+            </tr>
+            <tr>
+                <td>Zebedaus</td>
+                <td>3</td>
+            </tr>
+            <tr>
+                <td>Liliya</td>
+                <td>20</td>
+            </tr>
+            <tr>
+                <td>Valerya</td>
+                <td>20</td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        function sortTable(event) {
+            let target = event.target;
+            let table = event.target.closest("table");
+            let th = event.target.closest('th');
+            let type = th?.dataset.type;
+
+            if (th && table && table.contains(th) && type) {
+                let parentRow = th.closest("tr");
+                let colNumber = 0;
+                let headerCells = parentRow.cells;
+                for (colNumber; colNumber < headerCells.length; ++colNumber) {
+                    if (headerCells[colNumber] === th) break;
+                }
+
+                let tbodyRows = Array.from(table.querySelector('tbody').rows);
+                if (type == 'number') {
+                    tbodyRows.sort((a, b) => {
+                        let cellsA = a.cells;
+                        let cellsB = b.cells;
+                        let numA = +cellsA[colNumber].textContent;
+                        let numB = +cellsB[colNumber].textContent;
+                        if (numA == numB) return 0;
+                        return (numA < numB) ? -1 : 1;
+                    })
+                }
+                if (type == 'string') {
+                    tbodyRows.sort((a, b) => {
+                        let cellsA = a.cells;
+                        let cellsB = b.cells;
+                        let strA = cellsA[colNumber].textContent;
+                        let strB = cellsB[colNumber].textContent;
+                        if (strA == strB) return 0;
+                        return (strA < strB) ? -1 : 1;
+                    })
+                }
+                let newBody = document.createElement('tbody');
+                for (let row of tbodyRows) {
+                    newBody.append(row);
+                }
+                table.querySelector('tbody').replaceWith(newBody);
+            }
+        }
+        document.addEventListener('click', sortTable);
+    </script>
+
+    <hr />
+
+    <h2>Задание 4: всплывающие подсказки</h2>
+
+    <button data-tooltip="Hello">Button 1</button>
+    <button data-tooltip="Hello x2">Button 2</button>
+
+    <script>
+        function showTooltip(event) {
+            let tooltipElem = event.target;
+            let tip = tooltipElem?.dataset.tooltip;
+
+            if (tip != undefined) {
+                let coords = tooltipElem.getBoundingClientRect();
+
+                let par = document.createElement('p');
+                par.innerHTML = tip;
+                par.classList.add('tooltip');
+                par.id = 'tooltip';
+                
+
+                document.body.append(par);
+
+                if (coords.top < par.offsetHeight + 10) {
+                    par.style.top = coords.top +
+                    window.pageYOffset + 10 +'px';
+                } else {
+                    par.style.top = coords.top +
+                    window.pageYOffset - 25 - par.offsetHeight + 'px';
+                }
+                
+                par.style.left = coords.left + 'px';
+                par.style.position = 'absolute';
+            }
+
+        }
+
+        function hideTip(event) {
+            let tooltipElem = event.target;
+            let tip = tooltipElem?.dataset.tooltip;
+
+            if (tip != undefined) {
+                let par = document.getElementById('tooltip');
+                if (tooltipElem.dataset.tooltip === par.innerHTML) {
+                    par.remove();
+                }
+            }
+        }
+        document.addEventListener('mouseover', showTooltip);
+        document.addEventListener('mouseout', hideTip);
+    </script>
+
+    <hr />
+
+    <text>
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+    </text>
+
+</body>
+
+</html>

@@ -26,8 +26,13 @@
     let ball = document.getElementById('ball');
     let box = document.getElementById('field')
 
-    ball.style.top = box.clientHeight / 2
-    ball.style.left = box.clientWidth / 2
+    ball.style.top = box.clientHeight / 2 - ball.clientHeight / 2 + 'px'
+    ball.style.left = box.clientWidth / 2 - ball.clientWidth / 2  + 'px'
+
+    function getScrollBottom(elem) {
+        elem.scrollBottom = elem.scrollHeight - elem.scrollTop - elem.clientHeight
+    }
+
   </script>
 </body>
 </html>

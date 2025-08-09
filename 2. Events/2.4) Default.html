@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Default actions</title>
+    <style>
+        .gallery{
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="https:sdfj a" onclick="alert('...'); return false;">(не) Перейдет на сайт</a>
+
+    <hr />
+
+    <article id="contents">
+        <a href="/">Ссылка</a>
+    </article>
+    <script>
+        function contentsPrevent(event) {
+            if(event.defaultPrevented) return;
+            let contentsArticle = event.target.closest("#contents");
+            let contentsLink = event.target.closest("a");
+            if (contentsArticle?.contains(contentsLink)) {
+                let wantsToLeave = confirm("Do you really want to follow this link?")
+                if (!wantsToLeave) {
+                    event.preventDefault();
+                }
+            }
+        }
+        let contents = document.getElementById('contents');
+        contents.addEventListener('click', contentsPrevent)
+    </script>
+
+    <hr />
+    <text>При нажатии на главное изображение происходит прокрутка галереи.</text>
+    <div id="gallery" class="gallery">
+        <img src="images/1.png" 
+        data-image-type="Main image"
+        width="500px"
+        height="500px">
+        <br />
+        <img src="images/2.png"
+            width="125px"
+            height="125px">
+        <img src="images/3.png"
+            width="125px"
+            height="125px">
+        <img src="images/4.png"
+            width="125px"
+            height="125px">
+        <img src="images/5.png"
+            width="125px"
+            height="125px">
+    </div>
+
+    <script>
+        function swapImages(event) {
+            if (event.defaultPrevented) return;
+            if (event.target?.dataset.imageType == "Main image") {
+                event.preventDefault();
+                let nextImage = event.target.nextElementSibling.nextElementSibling;
+                let w = nextImage.width;
+                let h = nextImage.height;
+                nextImage.width = event.target.width;
+                nextImage.height = event.target.height;
+                nextImage.dataset.imageType = 'Main image';
+
+                event.target.height = h;
+                event.target.width = w;
+                event.target.dataset.imageType='';
+
+                event.target.replaceWith(nextImage);
+                gallery.append(event.target);
+            }
+        }
+        gallery.addEventListener('click', swapImages);
+    </script>
+</body>
+
+</html>

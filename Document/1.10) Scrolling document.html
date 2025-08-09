@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <header id = 'header'>
+        <center><nav>
+            <a href='/index.html'>Главная</a>
+            <a href="https://learn.javascript.ru/" target="_blank">Учебник</a>
+            <a href="/homeworks.html">ДЗ</a>
+        </nav></center>
+    </header>
+
+    <button id = 'scrollBy'>Прокрутка на 200 px</button>
+    <button id = 'scrollTo'>Прокрутка вниз</button>
+    <br />
+    <text id = 'filler'>
+        Русь святая, храни веру православную, в ней же тебе утверждение. <br />
+    </text>
+    <button id = 'scrollIntoView' onclick = scrollBy.scrollIntoView()>Прокрутка до элемента button</button>
+    <script>
+        let textField = document.getElementById('filler');
+        let text = textField.innerHTML;
+        for (let i = 0; i < 100; i ++) {
+            textField.innerHTML += text;
+        }
+    </script>
+
+    <script>
+        let buttonScrollBy = document.getElementById('scrollBy');
+        buttonScrollBy.onclick = () => {
+            window.scrollBy({
+                top: 200,
+                left: 0,
+                behavior: "smooth"
+            })
+        }
+        let width = Math.max(
+            document.body.clientWidth, document.documentElement.clientWidth,
+            document.body.offsetWidth, document.documentElement.offsetWidth,
+            document.body.scrollWidth, document.documentElement.scrollWidth
+        )
+        let height = Math.max(
+            document.body.offsetHeight, document.documentElement.offsetHeight,
+            document.body.clientHeight, document.documentElement.clientHeight,
+            document.body.scrollHeight, document.documentElement.scrollHeight
+        )
+        
+        let buttonScrollTo = document.getElementById('scrollTo');
+        buttonScrollTo.onclick = () => {
+            window.scrollTo({
+                top: height - document.documentElement.clientHeight,
+                left: 0,
+                behavior: "smooth"
+            })
+        }
+
+        let buttonScrollInto = document.getElementById('scrollIntoView');
+        buttonScrollInto.onclick = () => {
+            let buttonScrollBy = document.getElementById("scrollBy");
+            buttonScrollBy.scrollIntoView({
+                behavior:"smooth"
+            });
+        }
+    </script>
+
+    <footer>
+        <center><div class = 'date of release'>Дата выполнения: 04.08.25</div></center>
+        <center>Все скриншоты были взяты с сайта <a href="https://learn.javascript.ru/">https://learn.javascript.ru</a> 
+        и используются в учебных целях.</center>
+    </footer>
+</body>
+</html>

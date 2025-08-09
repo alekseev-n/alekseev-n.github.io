@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Координаты</title>
+    <style>
+        #field {
+            width: 200px;
+            border: 10px groove black;
+            background-color: #00FF00;
+            position: relative;
+        }
+
+        #ball {
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="field" style="position:absolute">. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+        . . . . . . . . . . . . . . . . . . . . . . . . </div>
+    <script id="task 1">
+        function getCoordsRectangle(elem) {
+            let coords = elem.getBoundingClientRect();
+
+            let leftInner = {
+                x: coords.left + elem.clientLeft,
+                y: coords.top + elem.clientTop
+            }
+
+            let rightInner = {
+                x: leftInner.x + elem.clientWidth,
+                y: leftInner.y + elem.clientHeight
+            }
+
+            return {
+                leftOuter: {
+                    x: coords.left,
+                    y: coords.top
+                },
+                leftInner: leftInner,
+                rigntInner: rightInner,
+                rigtOuter: {
+                    x: coords.right,
+                    y: coords.bottom
+                }
+            }
+        }
+    </script>
+    <script id = "task 2: show notification">
+        /* This function shows a note with text html 
+        near element 'anchor' with one of positions:
+        top, right, bottom*/
+        function showNote(anchor, position, html) {
+            let note = document.createElement('text');
+            note.innerHTML = html;
+            positionAt(anchor, position, note);
+        }
+
+        /* This funtction 'PositionAt' positions an element elem
+        near the anchor with one of those 3 positions:
+        'top' - right above the anchor
+        'right' - at the right of the anchor
+        'bottom' - right under the anchor */
+        function positionAt(anchor, position, elem) {
+            elem.style.position = 'absolute';
+            
+            let coords = anchor.getBoundingClientRect;
+            if (position == 'top') {
+                elem.style.left = coords.left + window.pageXOffset + 'px';
+                elem.style.top = coords.top - elem.offsetHeight + window.pageYoffset + 'px';
+            } else if (position == 'right') {
+                elem.style.left = coords.right + window.pageXOffset + 'px';
+                elem.style.top = coords.top + window.pageYOffset + 'px';
+            } else if (position == 'bottom') {
+                elem.style.left = coords.left + window.pageXOffset + 'px';
+                elem.style.top = coords.bottom + window.pageYOffset + 'px'
+            }
+            document.body.append(elem);
+        }
+
+        showNote(field, 'bottom', 'hello')
+    </script>
+</body>
+
+</html>
